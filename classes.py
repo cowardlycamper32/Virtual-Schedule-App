@@ -173,17 +173,36 @@ class TaskList:
             sixty = maxscore * 0.6
             eighty = maxscore * 0.8
 
+        orgFile = open("history.dat", "r+")
+        orgHist = orgFile.readlines()
+        orgFile.close()
+
+        newFile = open("history.dat", "w")
+        newFile.write(orgHist[-1] + "\n")
+
         if score < twenty:
+            newFile.write("D")
+            newFile.close()
             return ranks.D
         elif score >= twenty and score < fourty:
+            newFile.write("C")
+            newFile.close()
             return ranks.C
         elif score >= fourty and score < sixty:
+            newFile.write("B")
+            newFile.close()
             return ranks.B
         elif score >= sixty and score < eighty:
+            newFile.write("A")
+            newFile.close()
             return ranks.A
         elif score >= eighty and score < maxscore:
+            newFile.write("S")
+            newFile.close()
             return ranks.S
         elif score == maxscore:
+            newFile.write("P")
+            newFile.close()
             return ranks.P
         else:
             raise InvalidScoreException("HOW TF DID YOU GET HERE?????")
