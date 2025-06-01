@@ -20,7 +20,8 @@ def mainMenu(tskmng: TaskList, saver: Saves):
     2) Show all tasks
     3) Show overdue tasks
     4) Mark task as completed
-    5) Exit"""
+    5) Score and Rank (only works on Sundays)
+    6) Exit"""
     print(text)
     try:
         choice = int(input("Enter your choice: "))
@@ -49,10 +50,13 @@ def mainMenu(tskmng: TaskList, saver: Saves):
                     checkandscore(task)
                 else:
                     print("TASK NOT FOUND")
+            input("Press enter to continue...")
 
         case 5:
             if dt.datetime.isoweekday(dt.datetime.today()) == scoreDay:
                 print(f"Total Score: {tskmng.weekEndScore()}")
+
+            input("Press enter to continue...")
 
         case 6:
             system(clearcmd)
