@@ -3,6 +3,7 @@ from time import sleep as wait
 from Exceptions import InvalidConfigPath, InvalidPathException, InvalidTaskException, InvalidScoreException
 from os.path import exists, isdir
 from os import name, system
+import ranks
 
 baseScore = 50
 baseMult = 1.5
@@ -173,17 +174,17 @@ class TaskList:
             eighty = maxscore * 0.8
 
         if score < twenty:
-            return "D"
+            return ranks.D
         elif score >= twenty and score < fourty:
-            return "C"
+            return ranks.C
         elif score >= fourty and score < sixty:
-            return "B"
+            return ranks.B
         elif score >= sixty and score < eighty:
-            return "A"
+            return ranks.A
         elif score >= eighty and score < maxscore:
-            return "S"
+            return ranks.S
         elif score == maxscore:
-            return "P"
+            return ranks.P
         else:
             raise InvalidScoreException("HOW TF DID YOU GET HERE?????")
 

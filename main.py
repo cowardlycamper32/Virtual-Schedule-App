@@ -54,7 +54,9 @@ def mainMenu(tskmng: TaskList, saver: Saves):
 
         case 5:
             if dt.datetime.isoweekday(dt.datetime.today()) == scoreDay:
-                print(f"Total Score: {tskmng.weekEndScore()}")
+                system(clearcmd)
+                print(tskmng.weekEndRanking(tskmng.weekEndScore()))
+                input("Press enter to continue...")
 
             input("Press enter to continue...")
 
