@@ -59,6 +59,10 @@ def mainMenu(tskmng: TaskList, saver: Saves):
             print("SAVING AND QUITING")
             saver.writeSaveFile()
             return False
+        case _:
+            print("Invalid choice.")
+            system(clearcmd)
+            mainMenu(tskmng)
 
 
 def main():
