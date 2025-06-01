@@ -35,20 +35,20 @@ def mainMenu(tskmng: TaskList, saver: Saves):
             task_description = input("Enter task description: ")
             endDay = input("Enter end day: ")
             tskmng.addTask(task_name, task_description, endDay)
-            return True
         case 2:
             tskmng.printAllTasks()
-            return True
         case 3:
             for task in tskmng.tasks:
-                if task.endDay <= dt.datetime.isoweekday(dt.datetime.today()) and not task.checked:
+                if task.endDay < dt.datetime.isoweekday(dt.datetime.today()) and not task.checked:
                     task.printTask()
-            return True
+                input("Press enter to continue...")
         case 4:
             taskName = input("Enter task name: ")
             for task in tskmng.tasks:
-                if task.taskName == taskName:
+                if task.name == taskName:
                     checkandscore(task)
+                else:
+                    print("TASK NOT FOUND")
 
         case 5:
             if dt.datetime.isoweekday(dt.datetime.today()) == scoreDay:
@@ -58,11 +58,13 @@ def mainMenu(tskmng: TaskList, saver: Saves):
             system(clearcmd)
             print("SAVING AND QUITING")
             saver.writeSaveFile()
-            return False
+            quit()
         case _:
             print("Invalid choice.")
             system(clearcmd)
             mainMenu(tskmng)
+
+    system(clearcmd)
     mainMenu(tskmng, saver)
 
 def main():

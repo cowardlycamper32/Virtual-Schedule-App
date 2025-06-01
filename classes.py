@@ -62,7 +62,11 @@ class Task:
         self.checked = False
         self.score = 0
     def printTask(self):
-        print(self.name + " - " + str(self.endDay), "\n", self.description)
+        if self.checked:
+            symbol = "✓"
+        else:
+            symbol = "x"
+        print(self.name + " - " + str(self.endDay) + "     " + symbol, "\n", self.description)
         input("Press enter to continue...")
         if name == "nt":
             clearcmd = "cls"
@@ -70,6 +74,7 @@ class Task:
             clearcmd = "clear"
         system(clearcmd)
     def checkTask(self):
+
         if self.checked:
             return False
         self.checked = True
