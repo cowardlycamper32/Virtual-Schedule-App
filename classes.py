@@ -1,13 +1,20 @@
 import datetime as dt
 from time import sleep as wait
-from Exceptions import InvalidConfigPath, InvalidPathException
+from Exceptions import InvalidConfigPath, InvalidPathException, InvalidTaskException, InvalidScoreException
 from os.path import exists, isdir
+from os import name, system
+
+baseScore = 50
+baseMult = 1.5
 
 class Task:
     def __init__(self, name, description, endDay):
         self.name = name
         self.description = description
-        match endDay.lower():
+        self.currentDay = dt.datetime.isoweekday(dt.datetime.today())
+        if type(endDay) == str:
+            endDay = endDay.lower()
+        match endDay:
             case "monday":
                 self.endDay = 1
             case "tuesday":
@@ -54,7 +61,28 @@ class Task:
                 raise Exception
         self.checked = False
         self.score = 0
+    def printTask(self):
+        print(self.name + " - " + str(self.endDay), "\n", self.description)
+        input("Press enter to continue...")
+        if name == "nt":
+            clearcmd = "cls"
+        else:
+            clearcmd = "clear"
+        system(clearcmd)
+    def checkTask(self):
+        if self.checked:
+            return False
+        self.checked = True
 
+    def addScore(self):
+        self.currentDay = dt.datetime.isoweekday(dt.datetime.today())
+
+        if self.currentDay > self.endDay:
+            difference = self.currentDay - self.endDay
+        else:
+            difference = self.endDay - self.currentDay
+        self.score = baseScore * baseMult * (7 - difference)
+        #print(self.score)
 
 
 
@@ -93,9 +121,11 @@ class TaskList:
     def __init__(self):
         self.tasks = []
         self.currentDay = dt.datetime.isoweekday(dt.datetime.today())
+        self.totalScore = 0
     def getCurrentDay(self):
         self.currentDay = dt.datetime.isoweekday(dt.datetime.today())
     def addTask(self, name, description, endDay):
+        #print(name, description, endDay)
         try:
             task = Task(name, description, endDay)
             self.tasks.append(task)
@@ -103,6 +133,57 @@ class TaskList:
         except Exception:
             print("Failed to add task\nPlease use a valid day such as monday or mon")
             return False
+    def printAllTasks(self):
+        if name == "nt":
+            clearcmd = 'cls'
+        else:
+            clearcmd = 'clear'
+        for task in self.tasks:
+            system(clearcmd)
+            task.printTask()
+        input("Press enter to continue...")
+        system(clearcmd)
+
+
+    def weekEndScore(self):
+        for task in self.tasks:
+            if task.checked == False:
+                task.score = 0
+            else:
+                task.addScore()
+            self.totalScore += task.score
+
+        return self.totalScore
+
+
+    def weekEndRanking(self, score: int):
+        numberoftasks = len(self.tasks)
+        if numberoftasks == 0:
+            return False
+        else:
+            maxscore = numberoftasks * baseScore * 7 * baseMult
+            twenty = maxscore * 0.2
+            fourty = maxscore * 0.4
+            sixty = maxscore * 0.6
+            eighty = maxscore * 0.8
+
+        if score < twenty:
+            return "D"
+        elif score >= twenty and score < fourty:
+            return "C"
+        elif score >= fourty and score < sixty:
+            return "B"
+        elif score >= sixty and score < eighty:
+            return "A"
+        elif score >= eighty and score < maxscore:
+            return "S"
+        elif score == maxscore:
+            return "P"
+        else:
+            raise InvalidScoreException("HOW TF DID YOU GET HERE?????")
+
+
+
 
 class ReadWriteTaskList:
     def __init__(self, taskList: TaskList):
@@ -110,10 +191,10 @@ class ReadWriteTaskList:
         self.taskManager = taskList
         self.saveFile = self.OpenSaveFile()
 
-    def OpenSaveFile(self, path="_help.sv"):
+    def OpenSaveFile(self, path="_help.sv", type="r"):
         if not self.SaveFileExist(path):
             open(path, "w+").close()
-        saveFile = open(path, "a+")
+        saveFile = open(path, type)
         return saveFile
 
 
@@ -129,6 +210,8 @@ class ReadWriteTaskList:
                 return True
 
     def writeSaveFile(self):
+        self.saveFile.close()
+        self.saveFile = self.OpenSaveFile(type="w+")
         for task in self.taskList:
             self.saveFile.write(str(task.name) + "," + str(task.description) + "," + str(task.endDay) + "," + str(task.score) + "\n")
         self.saveFile.close()
@@ -139,15 +222,14 @@ class ReadWriteTaskList:
             file = open(path, "r")
             red = file.readlines()
             file.close()
+            #print(red)
         except IOError:
             raise InvalidPathException
         for i in range(len(red)):
             task = red[i].split(",")
-            self.taskManager.addTask(task[0], task[1], task[2])
-            print(self.taskManager.tasks)
-
-
-
-tskmng = TaskList()
-a = ReadWriteTaskList(tskmng)
-a.readSaveFile()
+            for i in range(len(task)):
+                task[i] = task[i].strip()
+                task[i] = task[i].strip("\n")
+            #print(task)
+            self.taskManager.addTask(task[0], task[1], int(task[2]))
+            #print(self.taskManager.tasks)
