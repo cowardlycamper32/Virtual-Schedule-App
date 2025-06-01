@@ -63,7 +63,7 @@ def mainMenu(tskmng: TaskList, saver: Saves):
             print("Invalid choice.")
             system(clearcmd)
             mainMenu(tskmng)
-
+    mainMenu(tskmng, saver)
 
 def main():
     taskManager = TaskList()
