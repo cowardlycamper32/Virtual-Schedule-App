@@ -27,7 +27,7 @@ def mainMenu(tskmng: TaskList, saver: Saves):
     except ValueError:
         print("Enter a valid choice.")
         system(clearcmd)
-        mainMenu(tskmng)
+        mainMenu(tskmng, saver)
 
     match choice:
         case 1:
