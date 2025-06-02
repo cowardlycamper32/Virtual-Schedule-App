@@ -9,7 +9,7 @@ baseScore = 50
 baseMult = 1.5
 
 class Task:
-    def __init__(self, name, description, endDay):
+    def __init__(self, name, description, endDay, checked=False, score=0):
         self.name = name
         self.description = description
         self.currentDay = dt.datetime.isoweekday(dt.datetime.today())
@@ -60,8 +60,8 @@ class Task:
                 self.endDay = 7
             case _:
                 raise Exception
-        self.checked = False
-        self.score = 0
+        self.checked = checked
+        self.score = score
     def printTask(self):
         if self.checked:
             symbol = "✓"
@@ -130,10 +130,10 @@ class TaskList:
         self.totalScore = 0
     def getCurrentDay(self):
         self.currentDay = dt.datetime.isoweekday(dt.datetime.today())
-    def addTask(self, name, description, endDay):
+    def addTask(self, name, description, endDay, checked=False, score=0):
         #print(name, description, endDay)
         try:
-            task = Task(name, description, endDay)
+            task = Task(name, description, endDay, checked, score)
             self.tasks.append(task)
             return True
         except Exception:
@@ -238,7 +238,7 @@ class ReadWriteTaskList:
         self.saveFile.close()
         self.saveFile = self.OpenSaveFile(type="w+")
         for task in self.taskList:
-            self.saveFile.write(str(task.name) + "," + str(task.description) + "," + str(task.endDay) + "," + str(task.score) + "\n")
+            self.saveFile.write(str(task.name) + "," + str(task.description) + "," + str(task.endDay) + "," + str(task.score) + "," + str(task.checked) + "\n")
         self.saveFile.close()
         return True
 
@@ -256,5 +256,9 @@ class ReadWriteTaskList:
                 task[i] = task[i].strip()
                 task[i] = task[i].strip("\n")
             #print(task)
-            self.taskManager.addTask(task[0], task[1], int(task[2]))
+            if task[3] == "False":
+                task[3] = False
+            else:
+                task[3] = True
+            self.taskManager.addTask(task[0], task[1], int(task[2]), task[4], int(task[3]))
             #print(self.taskManager.tasks)

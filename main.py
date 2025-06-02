@@ -57,7 +57,8 @@ def mainMenu(tskmng: TaskList, saver: Saves):
                 system(clearcmd)
                 print(tskmng.weekEndRanking(tskmng.weekEndScore()))
                 input("Press enter to continue...")
-
+            else:
+                print("You can only get a ranking on the score day, currently Sunday.")
             input("Press enter to continue...")
 
         case 6:
