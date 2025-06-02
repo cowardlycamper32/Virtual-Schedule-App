@@ -216,7 +216,7 @@ class ReadWriteTaskList:
         self.taskManager = taskList
         self.saveFile = self.OpenSaveFile()
 
-    def OpenSaveFile(self, path="_help.sv", type="r"):
+    def OpenSaveFile(self, path="save.sv", type="r"):
         if not self.SaveFileExist(path):
             open(path, "w+").close()
         saveFile = open(path, type)
@@ -242,7 +242,7 @@ class ReadWriteTaskList:
         self.saveFile.close()
         return True
 
-    def readSaveFile(self, path="_help.sv"):
+    def readSaveFile(self, path="save.sv"):
         try:
             file = open(path, "r")
             red = file.readlines()
